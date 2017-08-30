@@ -40,7 +40,7 @@ If you have everything set up correctly:
 - If a APA102 RGB Led strip is connected, it will display a rainbow of 7 pixels indicating the current pressure.
 - If a Google Cloud Platform project is configured (see instruction below), it will publish the sensor data to Google Cloug PubSub.
 
-## Google Cloud Platform configuration (optional)
+## Google Cloud PubSub Publisher configuration (optional)
 
 0. Go to your project in the [Google Cloud Platform console](https://console.cloud.google.com/)
 0. Under *API Manager*, enable the following APIs: Cloud Pub/Sub
@@ -57,6 +57,26 @@ gcloud --project <CLOUD_PROJECT_ID> beta pubsub subscriptions pull <PULL_SUBSCRI
 
 Note: If there is no `credentials.json` file in `app/src/main/res/raw`, the app will
  run offline and will not send sensor data to the [Google Cloud Pub/Sub](https://cloud.google.com/pubsub/).
+
+## Google Cloud IoT Core Publisher configuration (optional)
+
+0. Follow the instructions in the [Google Cloud IoT Core Java](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/iot/api-client)
+sample to:
+  0. Generate asymmetric keys for device registration
+  0. Generate a pkcs8 key file
+  0. Register your device with the Cloud IoT Core devive manager
+0. Copy the private key file (e.g. `rsa_private_pkcs8`) to `app/src/main/res/raw/privatekey.txt`
+0. Replace the values in values > strings.xml to match those for your project, registry ID, device ID, and region.
+0. Now when you run the application, your
+
+After running the sample, you can check that your data is ingested in Google Cloud Pub/Sub by running the following command:
+```
+gcloud --project <CLOUD_PROJECT_ID> beta pubsub subscriptions pull <PULL_SUBSCRIBTION_NAME>
+```
+
+Note: If there is no `privatekey.txt` file in `app/src/main/res/raw`, the app will
+run offline and will not send sensor data to the [Google Cloud IoT Core](https://cloud.google.com/iot-core).
+
 
 ## Next steps
 
