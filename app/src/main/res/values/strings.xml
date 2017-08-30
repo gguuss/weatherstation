@@ -15,4 +15,8 @@
 -->
 <resources>
     <string name="app_name">Weatherstation</string>
+    <string name="iot_core_device_id">your-device-id</string>
+    <string name="iot_core_registry_id">your-registry-id</string>
+    <string name="gcloud_project_id">your-project-id</string>
+    <string name="gcloud_region">us-central1</string>
 </resources>

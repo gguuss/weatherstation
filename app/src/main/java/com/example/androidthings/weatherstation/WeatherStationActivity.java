@@ -77,6 +77,7 @@ public class WeatherStationActivity extends Activity {
     private float mLastPressure;
 
     private PubsubPublisher mPubsubPublisher;
+    private IotCorePublisher mIotCorePublisher;
     private ImageView mImageView;
 
     private static final int MSG_UPDATE_BAROMETER_UI = 1;
@@ -117,12 +118,20 @@ public class WeatherStationActivity extends Activity {
                     mSensorManager.registerListener(mPubsubPublisher.getTemperatureListener(), sensor,
                             SensorManager.SENSOR_DELAY_NORMAL);
                 }
+                if (mIotCorePublisher != null) {
+                    mSensorManager.registerListener(mIotCorePublisher.getTemperatureListener(), sensor,
+                            SensorManager.SENSOR_DELAY_NORMAL);
+                }
             } else if (sensor.getType() == Sensor.TYPE_PRESSURE) {
                 // Our sensor is connected. Start receiving pressure data.
                 mSensorManager.registerListener(mPressureListener, sensor,
                         SensorManager.SENSOR_DELAY_NORMAL);
                 if (mPubsubPublisher != null) {
                     mSensorManager.registerListener(mPubsubPublisher.getPressureListener(), sensor,
+                            SensorManager.SENSOR_DELAY_NORMAL);
+                }
+                if (mIotCorePublisher != null) {
+                    mSensorManager.registerListener(mIotCorePublisher.getPressureListener(), sensor,
                             SensorManager.SENSOR_DELAY_NORMAL);
                 }
             }
@@ -287,6 +296,18 @@ public class WeatherStationActivity extends Activity {
                         BuildConfig.PROJECT_ID, BuildConfig.PUBSUB_TOPIC, credentialId);
                 mPubsubPublisher.start();
             } catch (IOException e) {
+                Log.e(TAG, "error creating pubsub publisher", e);
+            }
+        }
+
+        // start Cloud PubSub Publisher if cloud credentials are present.
+        int pkId = getResources().getIdentifier("privatekey", "raw", getPackageName());
+        if (pkId != 0) {
+            try {
+                mIotCorePublisher = new IotCorePublisher(this, "weatherstation",
+                        BuildConfig.PROJECT_ID, BuildConfig.PUBSUB_TOPIC, pkId);
+                mIotCorePublisher.start();
+            } catch (Exception e) {
                 Log.e(TAG, "error creating pubsub publisher", e);
             }
         }
